@@ -15,6 +15,7 @@ public class Player : Entity
     [Header("Move info")]
     public float moveSpeed;
     public float jumpForce;
+    public float swordReturnImpact;//收剑时的后坐力
 
     [Header("Dash info")]
     public float dashSpeed;
@@ -22,6 +23,7 @@ public class Player : Entity
     public float dashDir { get; private set; }
 
     public SkillManager skill { get; private set; }
+    public GameObject sword { get; private set; }
 
     #region States
     public PlayerStateMachine stateMachine { get; private set; }
@@ -72,6 +74,19 @@ public class Player : Entity
         stateMachine.currentState.Update();
 
         CheckForDashInput();
+    }
+
+    //分配新剑
+    public void AssignNewSword(GameObject newSword)
+    {
+        sword = newSword;
+    }
+
+    //清除剑
+    public void ClearTheSword()
+    {
+        stateMachine.ChangeState(catchSwordState);
+        Destroy(sword);
     }
 
     public IEnumerator BusyFor(float seconds)

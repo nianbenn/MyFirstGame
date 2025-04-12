@@ -5,22 +5,24 @@ using UnityEngine.WSA;
 
 public class Enemy : Entity
 {
+    [Header("Stunned Info")] //控制
+    public float stunDuration;
+    public Vector2 stunDirection;
+    protected bool canBeStunned;
+    [SerializeField] protected GameObject counterImage;
+
     [SerializeField] protected LayerMask whatIsPlayer;
     [Header("Move Info")]
     public float moveSpeed;
     public float idleTime;
     public float battleTime;
+    private float defaultMoveSpeed;
 
     [Header("Attack Info")]
     public float attackDistance;
     public float attackCooldown;
     [HideInInspector] public float lastTimeAttacked;
 
-    [Header("Stunned Info")] //控制
-    public float stunDuration;
-    public Vector2 stunDirection;
-    protected bool canBeStunned;
-    [SerializeField] protected GameObject counterImage;
 
 
     public EnemyStateMachine stateMachine { get; private set; }
@@ -30,15 +32,41 @@ public class Enemy : Entity
         base.Awake();
         stateMachine = new EnemyStateMachine();
 
+        defaultMoveSpeed = moveSpeed;
     }
 
     protected override void Update()
     {
         base.Update();
         stateMachine.currentState.Update();
-
     }
 
+    //冻结敌人
+    public virtual void FreezeTime(bool timeFrozen)
+    {
+        if (timeFrozen)
+        {
+            moveSpeed = 0;
+            anim.speed = 0;
+        }
+        else
+        {
+            moveSpeed = defaultMoveSpeed;
+            anim.speed = 1;
+        }
+    }
+
+    //冻结协程
+    protected virtual IEnumerator FreezeTimerFor(float seconds)
+    {
+        FreezeTime(true);
+
+        yield return new WaitForSeconds(seconds);
+
+        FreezeTime(false);
+    }
+
+    #region Counter Attack Window 反击窗口
     public virtual void OpenCounterAttackWindow()
     {
         canBeStunned = true;
@@ -50,6 +78,7 @@ public class Enemy : Entity
         canBeStunned = false;
         counterImage.SetActive(false);//关闭组件
     }
+    #endregion
 
     public virtual bool CanBeStunned()
     {

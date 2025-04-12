@@ -30,14 +30,14 @@ public class Entity : MonoBehaviour
 
     protected virtual void Awake()
     {
-
+        anim = GetComponentInChildren<Animator>();
+        fx = GetComponentInChildren<EntityFX>();
+        rb = GetComponent<Rigidbody2D>();
     }
 
     protected virtual void Start()
     {
-        anim = GetComponentInChildren<Animator>();
-        fx = GetComponentInChildren<EntityFX>();
-        rb = GetComponent<Rigidbody2D>();
+        
     }
 
     protected virtual void Update()
@@ -50,7 +50,7 @@ public class Entity : MonoBehaviour
         //启动协程
         fx.StartCoroutine("FlashFX");
         StartCoroutine("HitKnockback");
-        Debug.Log(gameObject.name + "");
+        //Debug.Log(gameObject.name + "");
     }
 
     protected virtual IEnumerator HitKnockback() //击退协程
