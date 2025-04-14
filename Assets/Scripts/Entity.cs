@@ -9,6 +9,7 @@ public class Entity : MonoBehaviour
     public Animator anim { get; private set; }
     public Rigidbody2D rb { get; private set; }
     public EntityFX fx {  get; private set; }
+    public SpriteRenderer spriteRenderer { get; private set; }
     #endregion
 
     [Header("Collision info")]
@@ -33,6 +34,7 @@ public class Entity : MonoBehaviour
         anim = GetComponentInChildren<Animator>();
         fx = GetComponentInChildren<EntityFX>();
         rb = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
     }
 
     protected virtual void Start()
@@ -108,4 +110,13 @@ public class Entity : MonoBehaviour
         }
     }
     #endregion
+
+    //Í¸Ã÷
+    public void MakeTransparent(bool transparent)
+    {
+        if (transparent)
+            spriteRenderer.color = Color.clear;
+        else
+            spriteRenderer.color = Color.white;
+    }
 }
